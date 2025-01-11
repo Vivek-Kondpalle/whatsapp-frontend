@@ -11,12 +11,14 @@ import { GET_USER_INFO } from './utils/constants'
 const PrivateRoute = ({ children }) => {
   const { userInfo } = useAppStore()
   const isAuthenticated = !!userInfo
+  console.log(' isAuthenticated in Private ', isAuthenticated)
   return isAuthenticated ? children : <Navigate to={'/auth'} />
 }
 
 const AuthRoute = ({ children }) => {
   const { userInfo } = useAppStore()
   const isAuthenticated = !!userInfo
+  console.log(' isAuthenticated in auth route ', isAuthenticated)
   return isAuthenticated ? <Navigate to={'/chat'} /> : children
 }
 
@@ -49,6 +51,10 @@ function App() {
     }
   }, [])
 
+  if(loading){
+    return <div>Loading....</div>
+  }
+
   return (
     <BrowserRouter>
       <Routes>
@@ -61,18 +67,18 @@ function App() {
           } 
         />
         <Route 
-          path='/chat' 
-          element={
-            <PrivateRoute>
-              <Chat />
-            </PrivateRoute>
-          } 
-        />
-        <Route 
           path='/profile' 
           element={
             <PrivateRoute>
               <Profile />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path='/chat' 
+          element={
+            <PrivateRoute>
+              <Chat />
             </PrivateRoute>
           } 
         />
