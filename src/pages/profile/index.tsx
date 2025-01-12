@@ -1,5 +1,5 @@
 import { useAppStore } from '@/store'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IoArrowBack } from 'react-icons/io5'
 import { FaTrash, FaPlus } from 'react-icons/fa'
@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { apiClient } from '@/lib/api-client'
-import { UPDATE_PROFILE_ROUTE } from '@/utils/constants'
+import { ADD_PROFILE_IMAGE_ROUTE, HOST, REMOVE_PROFILE_IMAGE_ROUTE, UPDATE_PROFILE_ROUTE } from '@/utils/constants'
 
 const Profile = () => {
   const navigate = useNavigate()
@@ -17,9 +17,10 @@ const Profile = () => {
   
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
-  const [image, setImage] = useState(null)
+  const [image, setImage] = useState<string | null>(null)
   const [hovered, setHovered] = useState(false)
   const [selectedColor, setSelectedColor] = useState(0)
+  const fileRef = useRef(null);
 
 
   useEffect(() => {
@@ -27,6 +28,11 @@ const Profile = () => {
       setFirstName(userInfo.firstName)
       setLastName(userInfo.lastName)
       setSelectedColor(userInfo.color)
+    }
+
+    if(userInfo.image){
+      console.log(' HOST -> ', HOST)
+      setImage(`${HOST}/${userInfo.image}`)
     }
   }, [])
   
@@ -70,6 +76,37 @@ const Profile = () => {
     }
   }
 
+  const handleFileInputClick = () => {
+    fileRef.current.click();
+  }
+
+  const handleImageChange = async (event) => {
+    const file = event.target.files[0]
+    console.log(' file -> ', file)
+    if(file){
+      const formData = new FormData()
+      formData.append("profile-image", file)
+      const response = await apiClient.post(ADD_PROFILE_IMAGE_ROUTE, formData, {withCredentials: true})
+      if(response.status === 200 && response.data.image){
+        setUserInfo({ ...userInfo, image: response.data.image })
+        toast.success("Image uploaded successfully")
+      }
+    }
+  }
+
+  const handleDeleteChange = async () => {
+    try {
+      const response = await apiClient.delete(REMOVE_PROFILE_IMAGE_ROUTE, {withCredentials: true})
+      if(response.status === 200){
+        setUserInfo({...userInfo, image: null})
+        toast.success('Image removed successfully.')
+        setImage(null)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div className='bg-[#1b1c24] h-[100vh] flex items-center justify-center flex-col gap-10'>
       <div className='flex flex-col gap-10 w-[80vw] md:w-max'>
@@ -92,7 +129,7 @@ const Profile = () => {
             </Avatar>
             {
               hovered && (
-                <div className='absolute inset-0 flex items-center justify-center bg-black/50 ring-fuchsia-50 rounded-full'>
+                <div className='absolute inset-0 flex items-center justify-center bg-black/50 ring-fuchsia-50 rounded-full' onClick={image ? handleDeleteChange : handleFileInputClick}>
                   {
                     image ?
                     <FaTrash className='text-white text-3xl cursor-pointer' />
@@ -102,7 +139,7 @@ const Profile = () => {
                 </div>
               )
             }
-            {/* <input type="text" /> */}
+            <input type="file" ref={fileRef} className='hidden' onChange={handleImageChange} name="profile-image" accept='.jpg, .png, .jpeg, .svg, .webp' />
           </div>
           <div className='flex min-w-32 md:min-w-64 flex-col gap-5 text-white items-center justify-center'>
             <div className='w-full'>
