@@ -8,7 +8,7 @@ import { IoArrowDown, IoCloseSharp } from 'react-icons/io5'
 
 const MessageContainer = () => {
   const scrollRef = useRef();
-  const { selectedChatData, selectedChatType, userInfo, selectedChatMessages, setSelectedChatMessages } = useAppStore();
+  const { selectedChatData, selectedChatType, userInfo, selectedChatMessages, setSelectedChatMessages, setFileDownloadProgress, setIsDownloading } = useAppStore();
   const [showImage, setShowImage] = useState(false)
   const [imageUrl, setImageUrl] = useState('')
 
@@ -71,7 +71,18 @@ const MessageContainer = () => {
   }
 
   const downloadFile = async (url) => {
-    const response = await apiClient.get(`${HOST}/${url}`, { responseType: 'blob' })
+    setIsDownloading(true)
+    setFileDownloadProgress(0)
+    const response = await apiClient.get(`${HOST}/${url}`, { 
+      responseType: 'blob',
+      onDownloadProgress: (progressEvent) => {
+        const {loaded, total} = progressEvent
+        console.log(' total ', total)
+        const percentCompleted = Math.round((loaded * 100) / total);
+        console.log(' percentCompleted ', percentCompleted)
+        setFileDownloadProgress(percentCompleted)
+      } 
+    })
     const urlBlob = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = urlBlob;
@@ -80,6 +91,8 @@ const MessageContainer = () => {
     link.click();
     link.remove();
     window.URL.revokeObjectURL(urlBlob);
+    setIsDownloading(false)
+    setFileDownloadProgress(0)
   }
 
   const renderDMMessages = (message) => (
