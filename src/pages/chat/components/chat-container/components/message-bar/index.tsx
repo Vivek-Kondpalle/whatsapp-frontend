@@ -29,7 +29,16 @@ const MessageBar = () => {
         messageType: 'text',
         fileUrl: undefined
       })
+    } else if(selectedChatType == 'channel'){
+      socket.emit('send-channel-message', {
+        sender: userInfo.id,
+        channelId: selectedChatData._id,
+        content: message,
+        messageType: 'text',
+        fileUrl: undefined
+      })
     }
+    setMessage("")
   }
 
   useEffect(() => {
@@ -72,6 +81,14 @@ const MessageBar = () => {
               sender: userInfo.id,
               recipient: selectedChatData._id,
               content: '',
+              messageType: 'file',
+              fileUrl: response.data.filePath
+            })
+          } else if(selectedChatType === 'channel'){
+            socket.emit('send-channel-message', {
+              sender: userInfo.id,
+              channelId: selectedChatData._id,
+              content: undefined,
               messageType: 'file',
               fileUrl: response.data.filePath
             })

@@ -32,7 +32,16 @@ export const SocketProvider = ({ children }) => {
                 }
             }
 
+            const handleRecieveChannelMessage = (message) => {
+                const { selectedChatData, addChannelMessage, addMessage } = useAppStore.getState()
+
+                if(selectedChatData !== undefined && selectedChatData._id === message.channelId){
+                    addMessage(message)
+                }
+            }
+
             socket.current.on("recieveMessage", handleRecieveMessage)
+            socket.current.on("recieve-channel-message", handleRecieveChannelMessage)
 
             return () => {
                 socket.current.disconnect()
