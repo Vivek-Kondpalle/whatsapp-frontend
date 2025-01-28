@@ -3,19 +3,20 @@ import Auth from './pages/auth'
 import Chat from './pages/chat'
 import Profile from './pages/profile'
 import { useAppStore } from './store'
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { apiClient } from './lib/api-client'
 import { GET_USER_INFO } from './utils/constants'
+import { UserInfo } from './types/get-user-info.type'
 
 
-const PrivateRoute = ({ children }) => {
+const PrivateRoute = ({ children }: { children: ReactNode }) => {
   const { userInfo } = useAppStore()
   const isAuthenticated = !!userInfo
   console.log(' isAuthenticated in Private ', isAuthenticated)
   return isAuthenticated ? children : <Navigate to={'/auth'} />
 }
 
-const AuthRoute = ({ children }) => {
+const AuthRoute = ({ children }: { children: ReactNode }) => {
   const { userInfo } = useAppStore()
   const isAuthenticated = !!userInfo
   console.log(' isAuthenticated in auth route ', isAuthenticated)
@@ -30,14 +31,14 @@ function App() {
   useEffect(() => {
     const getUserData = async () => {
       try {
-        const response = await apiClient.get(GET_USER_INFO, { withCredentials: true })
+        const response = await apiClient.get<UserInfo>(GET_USER_INFO, { withCredentials: true })
         
         if(response.status === 200 && response.data.id){
           setUserInfo(response.data)
         } else {
           setUserInfo(undefined)
         }
-      } catch (error) {
+      } catch {
         setUserInfo(undefined)
       } finally {
         setLoading(false)
@@ -49,7 +50,7 @@ function App() {
     } else {
       setLoading(false)
     }
-  }, [])
+  }, [setUserInfo, userInfo])
 
   if(loading){
     return <div>Loading....</div>

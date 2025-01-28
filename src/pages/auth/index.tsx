@@ -9,6 +9,8 @@ import { apiClient } from "@/lib/api-client";
 import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store";
+import { SignupRequest, SignupResponse } from "@/types/signup.type";
+import { SigninRequest, SigninResponse } from "@/types/signin.types";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -36,15 +38,21 @@ const Auth = () => {
 
   const handleSignup = async () => {
     if (validateSignup()) {
-      const response = await apiClient.post(
-        SIGNUP_ROUTE,
-        { email, password },
-        { withCredentials: true }
-      );
-      console.log(response);
-      if (response.status === 201) {
-        setUserInfo(response.data.user)
-        navigate("/profile");
+      try {
+        const requestData: SignupRequest = { email, password };
+
+        const response = await apiClient.post<SignupResponse>(
+          SIGNUP_ROUTE,
+          requestData,
+          { withCredentials: true }
+        );
+        console.log(response);
+        if (response.status === 201) {
+          setUserInfo(response.data.user)
+          navigate("/profile");
+        }
+      } catch (error) {
+        console.error("Signup failed", error);
       }
     }
   };
@@ -64,21 +72,27 @@ const Auth = () => {
 
   const handleLogin = async () => {
     if (validateLogin()) {
-      const response = await apiClient.post(
-        LOGIN_ROUTE,
-        { email, password },
-        { withCredentials: true }
-      );
-      console.log(response);
-      if (response.status === 200) {
-        if (response.data.user.id) {
-          setUserInfo(response.data.user)
-          if (!response.data.user.profileSetup) {
-            navigate('/profile')
-          } else {
-            navigate('/chat')
+      try {
+        const requestData: SigninRequest = { email, password };
+
+        const response = await apiClient.post<SigninResponse>(
+          LOGIN_ROUTE,
+          requestData,
+          { withCredentials: true }
+        );
+        console.log(response);
+        if (response.status === 200) {
+          if (response.data.user.id) {
+            setUserInfo(response.data.user)
+            if (!response.data.user.profileSetup) {
+              navigate('/profile')
+            } else {
+              navigate('/chat')
+            }
           }
         }
+      } catch (error) {
+        console.log("Signin Failed: ", error);
       }
     }
   };

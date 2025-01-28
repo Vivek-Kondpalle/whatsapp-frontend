@@ -4,9 +4,9 @@ type UserInfo = {
     id: string;
     email: string;
     profileSetup: boolean;
-    firstName: string;
-    lastName: string;
-    color: number;
+    firstName?: string;
+    lastName?: string;
+    color?: number;
 }
 
 export type AuthSlice = {
