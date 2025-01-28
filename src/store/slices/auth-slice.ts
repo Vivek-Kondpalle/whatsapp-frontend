@@ -1,13 +1,5 @@
+import { UserInfo } from "@/types/get-user-info.type";
 import { StateCreator } from "zustand";
-
-type UserInfo = {
-    id: string;
-    email: string;
-    profileSetup: boolean;
-    firstName?: string;
-    lastName?: string;
-    color?: number;
-}
 
 export type AuthSlice = {
     userInfo: UserInfo | undefined; 
