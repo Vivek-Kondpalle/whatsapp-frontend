@@ -6,6 +6,8 @@ import { GET_DM_CONTACTS_ROUTE, GET_USER_CHANNELS_ROUTE } from "@/utils/constant
 import { useAppStore } from "@/store"
 import ContactList from "@/components/contact-list"
 import CreateChannel from "./components/create-channel"
+import { GetDmContactTypeResponse } from "@/types/get-dm-contact.type"
+import { GetUserChannelsResponse } from "@/types/get-user-channels.type"
 
 const ContactsContainer = () => {
 
@@ -13,7 +15,7 @@ const ContactsContainer = () => {
   
   useEffect(() => {
     const getContacts = async () => {
-      const response = await apiClient.get(GET_DM_CONTACTS_ROUTE, { withCredentials: true })
+      const response = await apiClient.get<GetDmContactTypeResponse>(GET_DM_CONTACTS_ROUTE, { withCredentials: true })
 
       if(response?.data?.contacts){
         setDirectMessagesContacts(response?.data?.contacts)
@@ -21,7 +23,7 @@ const ContactsContainer = () => {
     }
 
     const getChannels = async () => {
-      const response = await apiClient.get(GET_USER_CHANNELS_ROUTE, { withCredentials: true })
+      const response = await apiClient.get<GetUserChannelsResponse>(GET_USER_CHANNELS_ROUTE, { withCredentials: true })
 
       if(response?.data?.channels){
         setChannels(response?.data?.channels)
@@ -62,7 +64,7 @@ const ContactsContainer = () => {
 
 export default ContactsContainer
 
-const Title = ({ text }) => {
+const Title = ({ text }: { text: string }) => {
   return (
     <h6 className="uppercase tracking-widest text-neutral-400 pl-10 font-light text-opacity-90 text-sm">{text}</h6>
   )

@@ -4,12 +4,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -20,19 +19,22 @@ import { HOST, SEARCH_CONTACTS_ROUTE } from "@/utils/constants";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useAppStore } from "@/store";
+import { Contact, SearchContactsRequest, SearchContactsResponse } from "@/types/search-contacts.type";
 
 const NewDM = () => {
   const [openNewContactModal, setOpenNewContactModal] = useState(false);
-  const [searchedContacts, setSearchedContacts] = useState([]);
+  const [searchedContacts, setSearchedContacts] = useState<Contact[]>([]);
 
   const {setSelectedChatType, setSelectedChatData} = useAppStore()
 
-  const searchContacts = async (searchTerm) => {
+  const searchContacts = async (searchTerm: string) => {
     try {
       if (searchTerm.length > 0) {
-        const response = await apiClient.post(
+        const requestData: SearchContactsRequest = { searchTerm };
+
+        const response = await apiClient.post<SearchContactsResponse>(
           SEARCH_CONTACTS_ROUTE,
-          { searchTerm },
+          requestData,
           { withCredentials: true }
         );
         if (response.status === 200 && response.data.contacts) {
@@ -46,7 +48,7 @@ const NewDM = () => {
     }
   };
 
-  const selectNewContact = (contact) => {
+  const selectNewContact = (contact: Contact) => {
      setOpenNewContactModal(false)
      setSearchedContacts([])
      setSelectedChatType("contact")

@@ -1,5 +1,5 @@
 import { useAppStore } from '@/store'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import ContactsContainer from './components/contacts-container'
@@ -12,7 +12,7 @@ const Chat = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if(!userInfo.profileSetup){
+    if(userInfo && !userInfo.profileSetup){
       toast('Please setup profile to continue');
       navigate('/profile')
     }
