@@ -2,8 +2,8 @@ import { UserInfo } from "@/types/get-user-info.type";
 import { StateCreator } from "zustand";
 
 export type AuthSlice = {
-    userInfo: UserInfo | undefined; 
-    setUserInfo: (userInfo: UserInfo | undefined) => void;
+    userInfo: UserInfo | undefined | null; 
+    setUserInfo: (userInfo: UserInfo | undefined | null) => void;
 };
 
 

@@ -1,10 +1,7 @@
-export type DmContact = {
-  _id: string;
-  lastMessageTime: string; // ISO string format
-  email: string;
-  firstName: string;
-  lastName: string;
-  color: number;
+import { BaseContact } from "./base-contact.type";
+
+export type DmContact = BaseContact & {
+  lastMessageTime?: string; // ISO string format
 };
 
 export type GetDmContactTypeResponse = {

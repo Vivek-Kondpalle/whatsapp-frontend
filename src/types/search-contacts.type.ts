@@ -1,17 +1,13 @@
+import { BaseContact } from "./base-contact.type";
+
 // Request type for searching contacts
 export type SearchContactsRequest = {
   searchTerm: string;
 };
 
 // Type for each contact in the response
-export type Contact = {
-  _id: string;
-  email: string;
+export type Contact = BaseContact & {
   profileSetup: boolean;
-  image?: string;
-  firstName?: string;
-  lastName?: string;
-  color?: number;
   __v: number;
 };
 

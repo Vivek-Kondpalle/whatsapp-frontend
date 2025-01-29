@@ -1,4 +1,36 @@
-export const createChatSlice = (set, get) => ({
+import { ChannelMessage, DMMessage } from "@/types/get-all-messages.type";
+import { DmContact } from "@/types/get-dm-contact.type";
+import { Channel } from "@/types/get-user-channels.type";
+import { StateCreator } from "zustand";
+
+export type ChatSlice = {
+    selectedChatData: undefined | DmContact | Channel;
+    setSelectedChatData: ( selectedChatData: undefined | DmContact | Channel) => void;
+    selectedChatType: undefined | 'channel' | 'contact';
+    setSelectedChatType: (selectedChatType: undefined | 'channel' | 'contact') => void;
+    channels: Channel[] | [];
+    setChannels: (channels: Channel[]) => void;
+    isUploading: boolean;
+    setIsUploading: (isUploading: boolean) => void;
+    isDownloading: boolean;
+    setIsDownloading: (isDownloading: boolean) => void;
+    addChannel: (channel: Channel) => void;
+    closeChat: () => void;
+    fileUploadProgress: number;
+    setFileUploadProgress: (fileUploadProgress: number) => void;
+    fileDownloadProgress: number;
+    setFileDownloadProgress: (fileDownloadProgress: number) => void;
+    selectedChatMessages: DMMessage[] | ChannelMessage[] | [];
+    setSelectedChatMessages: (selectedChatMessages: DMMessage[] | ChannelMessage[] | []) => void;
+    directMessagesContacts: DmContact[] | [];
+    setDirectMessagesContacts: (directMessagesContacts: DmContact[]) => void;
+
+    // 
+
+    addMessage: (message: any) => void;
+}
+
+export const createChatSlice: StateCreator<ChatSlice, [], [], ChatSlice> = (set, get) => ({
     selectedChatType: undefined,
     selectedChatData: undefined,
     selectedChatMessages: [],

@@ -50,7 +50,7 @@ const ProfileInfo = () => {
         </div>
         <div>
             {
-                userInfo.firstName && userInfo.lastName ? `${userInfo.firstName} ${userInfo.lastName}` : ''
+                userInfo?.firstName && userInfo?.lastName ? `${userInfo?.firstName} ${userInfo?.lastName}` : ''
             }
         </div>
       </div>

@@ -4,12 +4,11 @@ import {
     TooltipProvider,
     TooltipTrigger,
   } from "@/components/ui/tooltip";
-  import React, { useEffect, useState } from "react";
+  import { useEffect, useState } from "react";
   import { FaPlus } from "react-icons/fa";
   import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogHeader,
     DialogTitle,
   } from "@/components/ui/dialog";
@@ -17,20 +16,22 @@ import {
   import { CREATE_CHANNEL_ROUTE, GET_ALL_CONTACTS_ROUTE } from "@/utils/constants";
   import { useAppStore } from "@/store";
 import { Button } from "@/components/ui/button";
-import MultipleSelector from "@/components/ui/multiselect";
+import MultipleSelector, { Option } from "@/components/ui/multiselect";
+import { GetAllContactsResponse, GetContact } from "@/types/get-all-contacts.type";
+import { CreateChannelRequest, CreateChannelResponse } from "@/types/create-channel.type";
   
   const CreateChannel = () => {
-    const {setSelectedChatType, setSelectedChatData, addChannel} = useAppStore()
+    const { addChannel } = useAppStore()
 
     const [newChannelModal, setNewChannelModal] = useState(false);
-    const [allContacts, setAllContacts] = useState([]);
-    const [selectedContacts, setSelectedContacts] = useState([]);
+    const [allContacts, setAllContacts] = useState<GetContact[]>([]);
+    const [selectedContacts, setSelectedContacts] = useState<Option[]>([]);
     const [channelName, setChannelName] = useState("");
     
 
     useEffect(() => {
       const getData = async () => {
-        const response = await apiClient.get(GET_ALL_CONTACTS_ROUTE, {withCredentials: true});
+        const response = await apiClient.get<GetAllContactsResponse>(GET_ALL_CONTACTS_ROUTE, {withCredentials: true});
         setAllContacts(response.data.contacts);
       }
 
@@ -40,10 +41,12 @@ import MultipleSelector from "@/components/ui/multiselect";
     const createChannel = async () => {
       try {
         if(selectedContacts.length > 0 && channelName.length > 0){
-          const response = await apiClient.post(CREATE_CHANNEL_ROUTE, {
+          const payload: CreateChannelRequest = {
             name: channelName,
             members: selectedContacts.map(contact => contact.value)
-          }, {withCredentials: true});
+          }
+
+          const response = await apiClient.post<CreateChannelResponse>(CREATE_CHANNEL_ROUTE, payload, {withCredentials: true});
 
           if(response.status === 201){
             setChannelName("");
