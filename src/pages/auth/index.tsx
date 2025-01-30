@@ -1,35 +1,35 @@
-import Background from "@/assets/login2.png";
-import Victory from "@/assets/victory.svg";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { apiClient } from "@/lib/api-client";
-import { LOGIN_ROUTE, SIGNUP_ROUTE } from "@/utils/constants";
-import { useNavigate } from "react-router-dom";
-import { useAppStore } from "@/store";
-import { SignupRequest, SignupResponse } from "@/types/signup.type";
-import { SigninRequest, SigninResponse } from "@/types/signin.types";
+import Background from '@/assets/login2.png';
+import Victory from '@/assets/victory.svg';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { apiClient } from '@/lib/api-client';
+import { LOGIN_ROUTE, SIGNUP_ROUTE } from '@/utils/constants';
+import { useNavigate } from 'react-router-dom';
+import { useAppStore } from '@/store';
+import { SignupRequest, SignupResponse } from '@/types/signup.type';
+import { SigninRequest, SigninResponse } from '@/types/signin.types';
 
 const Auth = () => {
   const navigate = useNavigate();
-  const { setUserInfo } = useAppStore()
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const { setUserInfo } = useAppStore();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const validateSignup = () => {
     if (!email.length) {
-      toast.error("Email is required");
+      toast.error('Email is required');
       return false;
     }
     if (!password.length) {
-      toast.error("Password is required");
+      toast.error('Password is required');
       return false;
     }
     if (password !== confirmPassword) {
-      toast.error("Password and confirm password must be same");
+      toast.error('Password and confirm password must be same');
       return false;
     }
 
@@ -41,29 +41,27 @@ const Auth = () => {
       try {
         const requestData: SignupRequest = { email, password };
 
-        const response = await apiClient.post<SignupResponse>(
-          SIGNUP_ROUTE,
-          requestData,
-          { withCredentials: true }
-        );
+        const response = await apiClient.post<SignupResponse>(SIGNUP_ROUTE, requestData, {
+          withCredentials: true
+        });
         console.log(response);
         if (response.status === 201) {
-          setUserInfo(response.data.user)
-          navigate("/profile");
+          setUserInfo(response.data.user);
+          navigate('/profile');
         }
       } catch (error) {
-        console.error("Signup failed", error);
+        console.error('Signup failed', error);
       }
     }
   };
 
   const validateLogin = () => {
     if (!email.length) {
-      toast.error("Email is required");
+      toast.error('Email is required');
       return false;
     }
     if (!password.length) {
-      toast.error("Password is required");
+      toast.error('Password is required');
       return false;
     }
 
@@ -75,24 +73,22 @@ const Auth = () => {
       try {
         const requestData: SigninRequest = { email, password };
 
-        const response = await apiClient.post<SigninResponse>(
-          LOGIN_ROUTE,
-          requestData,
-          { withCredentials: true }
-        );
+        const response = await apiClient.post<SigninResponse>(LOGIN_ROUTE, requestData, {
+          withCredentials: true
+        });
         console.log(response);
         if (response.status === 200) {
           if (response.data.user.id) {
-            setUserInfo(response.data.user)
+            setUserInfo(response.data.user);
             if (!response.data.user.profileSetup) {
-              navigate('/profile')
+              navigate('/profile');
             } else {
-              navigate('/chat')
+              navigate('/chat');
             }
           }
         }
       } catch (error) {
-        console.log("Signin Failed: ", error);
+        console.log('Signin Failed: ', error);
       }
     }
   };
@@ -104,11 +100,7 @@ const Auth = () => {
           <div className="flex items-center justify-center flex-col">
             <div className="flex items-center justify-center">
               <h1 className="text-4xl font-bold md:text-6xl">Welcome</h1>
-              <img
-                src={Victory}
-                alt="Victory Emoji"
-                className="h-[80px] md:h-[100px]"
-              />
+              <img src={Victory} alt="Victory Emoji" className="h-[80px] md:h-[100px]" />
             </div>
             <p className="font-medium text-center">
               Fill in the details to get started with the chat app

@@ -1,12 +1,12 @@
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-import { Toaster } from "@/components/ui/sonner"
-import { SocketProvider } from './context/SocketContext.tsx'
+import { createRoot } from 'react-dom/client';
+import './index.css';
+import App from './App.tsx';
+import { Toaster } from '@/components/ui/sonner';
+import { SocketProvider } from './context/SocketContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <SocketProvider>
     <App />
     <Toaster />
-  </SocketProvider>,
-)
+  </SocketProvider>
+);

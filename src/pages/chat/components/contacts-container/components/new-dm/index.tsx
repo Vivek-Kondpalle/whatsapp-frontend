@@ -1,31 +1,25 @@
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useState } from 'react';
+import { FaPlus } from 'react-icons/fa';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import Lottie from 'react-lottie';
+import { animationDefaultOptions, getColors } from '@/lib/utils';
+import { apiClient } from '@/lib/api-client';
+import { HOST, SEARCH_CONTACTS_ROUTE } from '@/utils/constants';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { useAppStore } from '@/store';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useState } from "react";
-import { FaPlus } from "react-icons/fa";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import Lottie from "react-lottie";
-import { animationDefaultOptions, getColors } from "@/lib/utils";
-import { apiClient } from "@/lib/api-client";
-import { HOST, SEARCH_CONTACTS_ROUTE } from "@/utils/constants";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { useAppStore } from "@/store";
-import { Contact, SearchContactsRequest, SearchContactsResponse } from "@/types/search-contacts.type";
+  Contact,
+  SearchContactsRequest,
+  SearchContactsResponse
+} from '@/types/search-contacts.type';
 
 const NewDM = () => {
   const [openNewContactModal, setOpenNewContactModal] = useState(false);
   const [searchedContacts, setSearchedContacts] = useState<Contact[]>([]);
 
-  const {setSelectedChatType, setSelectedChatData} = useAppStore()
+  const { setSelectedChatType, setSelectedChatData } = useAppStore();
 
   const searchContacts = async (searchTerm: string) => {
     try {
@@ -49,11 +43,11 @@ const NewDM = () => {
   };
 
   const selectNewContact = (contact: Contact) => {
-     setOpenNewContactModal(false)
-     setSearchedContacts([])
-     setSelectedChatType("contact")
-     setSelectedChatData(contact)
-  }
+    setOpenNewContactModal(false);
+    setSearchedContacts([]);
+    setSelectedChatType('contact');
+    setSelectedChatData(contact);
+  };
 
   return (
     <>
@@ -83,8 +77,7 @@ const NewDM = () => {
               onChange={(e) => searchContacts(e.target.value)}
             />
           </div>
-          {
-            searchedContacts?.length > 0 && (
+          {searchedContacts?.length > 0 && (
             <ScrollArea className="h-[250px]">
               <div className="flex flex-col gap-5">
                 {searchedContacts.map((contact) => (
@@ -116,9 +109,9 @@ const NewDM = () => {
                     </div>
                     <div className="flex flex-col">
                       <span>
-                          {
-                              contact.firstName && contact.lastName ? `${contact.firstName} ${contact.lastName}` : contact.email
-                          }
+                        {contact.firstName && contact.lastName
+                          ? `${contact.firstName} ${contact.lastName}`
+                          : contact.email}
                       </span>
                       <span className="text-xs">{contact.email}</span>
                     </div>

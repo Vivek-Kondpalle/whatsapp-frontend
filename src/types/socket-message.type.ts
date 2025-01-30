@@ -10,7 +10,7 @@ export type User = {
 export type SocketMessage = {
   _id: string;
   content: string;
-  messageType: "text" | "file"; // Assuming these are the possible values
+  messageType: 'text' | 'file'; // Assuming these are the possible values
   recipient: User;
   sender: User;
   timestamp: string; // ISO string format
@@ -21,7 +21,7 @@ export type SocketChannelMessage = {
   _id: string;
   channelId: string;
   content: string;
-  messageType: "text" | "file"; // Assuming these are the possible values
+  messageType: 'text' | 'file'; // Assuming these are the possible values
   recipient: null; // Always null for channel messages
   sender: User;
   timestamp: string; // ISO string format

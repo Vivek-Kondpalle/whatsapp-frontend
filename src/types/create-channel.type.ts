@@ -1,4 +1,4 @@
-import { Channel } from "./get-user-channels.type";
+import { Channel } from './get-user-channels.type';
 
 export type CreateChannelRequest = {
   name: string;
@@ -6,5 +6,5 @@ export type CreateChannelRequest = {
 };
 
 export type CreateChannelResponse = {
-    channel: Channel;
-}
+  channel: Channel;
+};

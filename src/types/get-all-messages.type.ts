@@ -1,7 +1,7 @@
 // DM message structure
 export type DMMessage = {
   content: string;
-  messageType: "text" | "file";
+  messageType: 'text' | 'file';
   sender: string; // user ID
   recipient: string; // user ID
   timestamp: string; // ISO timestamp
@@ -13,7 +13,7 @@ export type DMMessage = {
 // Channel message structure
 export type ChannelMessage = {
   content: string;
-  messageType: "text" | "file";
+  messageType: 'text' | 'file';
   sender: {
     _id: string;
     email: string;

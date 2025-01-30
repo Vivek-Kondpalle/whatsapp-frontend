@@ -1,4 +1,4 @@
-import { BaseContact } from "./base-contact.type";
+import { BaseContact } from './base-contact.type';
 
 export type DmContact = BaseContact & {
   lastMessageTime?: string; // ISO string format

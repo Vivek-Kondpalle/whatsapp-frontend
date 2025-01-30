@@ -6,4 +6,4 @@ export type UserInfo = {
   lastName?: string;
   color?: number;
   image?: string | null;
-}
+};

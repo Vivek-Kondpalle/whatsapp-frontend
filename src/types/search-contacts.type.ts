@@ -1,4 +1,4 @@
-import { BaseContact } from "./base-contact.type";
+import { BaseContact } from './base-contact.type';
 
 // Request type for searching contacts
 export type SearchContactsRequest = {
