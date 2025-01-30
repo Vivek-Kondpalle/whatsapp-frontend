@@ -1,26 +1,29 @@
-import { useEffect, useRef, useState } from "react"
+import { ChangeEvent, useEffect, useRef, useState } from "react"
 import { GrAttachment } from 'react-icons/gr'
 import { RiEmojiStickerLine } from 'react-icons/ri'
 import { IoSend } from 'react-icons/io5'
-import EmojiPicker from 'emoji-picker-react'
-import { useSocket } from "@/context/SocketContext"
+import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react'
 import { useAppStore } from "@/store"
 import { apiClient } from "@/lib/api-client"
 import { UPLOAD_FILE_ROUTE } from "@/utils/constants"
+import { FileUploadRequest, FileUploadResponse } from "@/types/upload-file.type"
+import { useSocket } from "@/context/SocketContext"
 
 const MessageBar = () => {
-  const emojiRef = useRef()
-  const fileInputRef = useRef()
+  const emojiRef = useRef<HTMLDivElement | null>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
   const socket = useSocket()
   const { userInfo, selectedChatData, selectedChatType, setIsUploading, setFileUploadProgress } = useAppStore()
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false)
   const [message, setMessage] = useState("")
 
-  const handleAddEmoji = (emoji) => {
+  const handleAddEmoji = (emoji: EmojiClickData) => {
     setMessage((msg) => msg + emoji.emoji)
   }
 
   const handleSendMessage = async () => {
+    if (!userInfo || !selectedChatData || !socket) return;
+
     if(selectedChatType == 'contact'){
       socket.emit('sendMessage', {
         sender: userInfo.id,
@@ -42,8 +45,8 @@ const MessageBar = () => {
   }
 
   useEffect(() => {
-    function handleClickOutside(event){
-      if(emojiRef.current && !emojiRef.current?.contains(event.target)){
+    function handleClickOutside(event: MouseEvent | Event){
+      if(emojiRef.current && !emojiRef.current?.contains(event.target as Node)){
         setEmojiPickerOpen(false)
       }
     }
@@ -60,21 +63,21 @@ const MessageBar = () => {
     }
   }
 
-  const handleAttachmentChange = async (event) => {
+  const handleAttachmentChange = async (event: ChangeEvent<HTMLInputElement>) => {
     try {
-      const file = event.target.files[0]
+      const file = event?.target?.files?.[0]
       if(file){
-        const formData = new FormData()
+        const formData: FileUploadRequest = new FormData()
         formData.append('file', file)
         setIsUploading(true)
-        const response = await apiClient.post(UPLOAD_FILE_ROUTE, formData, {
+        const response = await apiClient.post<FileUploadResponse>(UPLOAD_FILE_ROUTE, formData, {
           withCredentials: true,
           onUploadProgress: (data) => {
-            setFileUploadProgress(Math.round((100 * data.loaded) / data.total))
+            setFileUploadProgress(Math.round((100 * data?.loaded) / (data?.total || 1)))
           }
         })
 
-        if(response.status === 200 && response.data){
+        if(response.status === 200 && response.data && userInfo && selectedChatData && socket){
           setIsUploading(false)
           if(selectedChatType === 'contact'){
             socket.emit('sendMessage', {
@@ -121,7 +124,7 @@ const MessageBar = () => {
           </button>
           <div className="absolute bottom-16 right-0" ref={emojiRef}>
             <EmojiPicker 
-              theme="dark"
+              theme={Theme.DARK}
               open={emojiPickerOpen}
               onEmojiClick={handleAddEmoji}
               autoFocusSearch={false}
