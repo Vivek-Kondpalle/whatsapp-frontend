@@ -10,8 +10,10 @@ type SocketProviderProps = {
     children: ReactNode;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const SocketContext = createContext<SocketContextType>(null)
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSocket = (): SocketContextType => {
     return useContext(SocketContext)
 }
